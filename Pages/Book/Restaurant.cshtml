@@ -1,0 +1,164 @@
+@page
+@model TableTies.Pages.Book.RestaurantModel
+@{
+    ViewData["Title"] = "Book a Restaurant Table";
+}
+
+@* Add Tailwind CSS and Fonts CDNs *@
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+<style>
+    body {
+        font-family: 'Inter', sans-serif;
+    }
+    .page-title {
+        font-family: 'Playfair Display', serif;
+    }
+</style>
+
+<div class="container mx-auto px-4 py-6 sm:py-8 max-w-2xl">
+
+    <h1 class="text-2xl sm:text-3xl font-bold text-blue-600 mb-6 sm:mb-8 text-center page-title">@ViewData["Title"]</h1>
+
+    @if (!string.IsNullOrEmpty(Model.StatusMessage))
+    {
+        <div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <span class="block sm:inline">@Model.StatusMessage</span>
+        </div>
+    }
+
+    <form method="post" class="bg-white p-4 sm:p-6 rounded-lg shadow-md">
+
+        <div asp-validation-summary="ModelOnly" class="text-red-600 text-sm mb-4" role="alert"></div>
+
+        <div class="mb-4 sm:mb-6">
+            <label asp-for="SelectedOrganizationId" class="block text-gray-700 text-sm font-bold mb-2 hover:text-blue-600 transition-colors duration-200">
+                <span class="flex items-center">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3z"/>
+                        <path d="M3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762z"/>
+                    </svg>
+                    Organization
+                </span>
+            </label>
+            <select asp-for="SelectedOrganizationId" class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-blue-500 hover:border-blue-400 transition-all duration-200" id="organization-select">
+                <option value="">-- Select Organization --</option>
+                @foreach (var organization in Model.OrganizationsList)
+                {
+                    <option value="@organization.Value">@organization.Text</option>
+                }
+            </select>
+            <span asp-validation-for="SelectedOrganizationId" class="text-red-500 text-xs italic mt-1"></span>
+        </div>
+
+        <div class="mb-4 sm:mb-6">
+            <label asp-for="SelectedRestaurantId" class="block text-gray-700 text-sm font-bold mb-2 hover:text-blue-600 transition-colors duration-200">
+                <span class="flex items-center">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6z"/>
+                        <path d="M10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/>
+                    </svg>
+                    Restaurant
+                </span>
+            </label>
+            <select asp-for="SelectedRestaurantId" class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-blue-500 hover:border-blue-400 transition-all duration-200" id="restaurant-select">
+                <option value="">-- Select Restaurant --</option>
+                @foreach (var restaurant in Model.RestaurantsList)
+                {
+                    <option value="@restaurant.Value">@restaurant.Text</option>
+                }
+            </select>
+            <span asp-validation-for="SelectedRestaurantId" class="text-red-500 text-xs italic mt-1"></span>
+        </div>
+
+        <div class="mb-4 sm:mb-6">
+            <label asp-for="BookingDate" class="block text-gray-700 text-sm font-bold mb-2 hover:text-blue-600 transition-colors duration-200">
+                <span class="flex items-center">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                    </svg>
+                    Booking Date
+                </span>
+            </label>
+            <input asp-for="BookingDate" type="date" class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-blue-500 hover:border-blue-400 transition-all duration-200" />
+            <span asp-validation-for="BookingDate" class="text-red-500 text-xs italic mt-1"></span>
+        </div>
+
+        <div class="mb-4 sm:mb-6">
+            <label asp-for="StartTime" class="block text-gray-700 text-sm font-bold mb-2 hover:text-blue-600 transition-colors duration-200">
+                <span class="flex items-center">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                    </svg>
+                    Start Time
+                </span>
+            </label>
+            <input asp-for="StartTime" type="time" class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-blue-500 hover:border-blue-400 transition-all duration-200" />
+            <span asp-validation-for="StartTime" class="text-red-500 text-xs italic mt-1"></span>
+        </div>
+
+        <div class="mb-4 sm:mb-6">
+            <label asp-for="EndTime" class="block text-gray-700 text-sm font-bold mb-2 hover:text-blue-600 transition-colors duration-200">
+                <span class="flex items-center">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                    </svg>
+                    End Time
+                </span>
+            </label>
+            <input asp-for="EndTime" type="time" class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-blue-500 hover:border-blue-400 transition-all duration-200" />
+            <span asp-validation-for="EndTime" class="text-red-500 text-xs italic mt-1"></span>
+        </div>
+
+        <div class="mb-4 sm:mb-6">
+            <label asp-for="NumberOfGuests" class="block text-gray-700 text-sm font-bold mb-2 hover:text-blue-600 transition-colors duration-200">
+                <span class="flex items-center">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
+                    </svg>
+                    Number of Guests
+                </span>
+            </label>
+            <input asp-for="NumberOfGuests" type="number" min="1" class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-blue-500 hover:border-blue-400 transition-all duration-200" placeholder="e.g., 4" />
+            <span asp-validation-for="NumberOfGuests" class="text-red-500 text-xs italic mt-1"></span>
+        </div>
+
+        <div class="mb-4 sm:mb-6">
+            <label asp-for="SpecialRequests" class="block text-gray-700 text-sm font-bold mb-2 hover:text-blue-600 transition-colors duration-200">
+                <span class="flex items-center">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                    </svg>
+                    Special Requests (Optional)
+                </span>
+            </label>
+            <textarea asp-for="SpecialRequests" rows="4" class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-blue-500 hover:border-blue-400 transition-all duration-200" placeholder="Any special dietary requirements or preferences..."></textarea>
+            <span asp-validation-for="SpecialRequests" class="text-red-500 text-xs italic mt-1"></span>
+        </div>
+
+        <div class="flex flex-col sm:flex-row items-center justify-between space-y-3 sm:space-y-0 sm:space-x-4">
+            <button type="submit" class="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-3 px-6 rounded-lg focus:outline-none focus:shadow-outline transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                <span class="flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                    </svg>
+                    Book Table
+                </span>
+            </button>
+            <a asp-page="/Index" class="w-full sm:w-auto text-center bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-lg focus:outline-none focus:shadow-outline transition-all duration-300 transform hover:scale-105">
+                <span class="flex items-center justify-center">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                    </svg>
+                    Cancel
+                </span>
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

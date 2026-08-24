@@ -1,0 +1,88 @@
+@page "{bookingId:Guid}" 
+@model TableTies.Pages.Book.BookingConfirmationModel
+@{
+    ViewData["Title"] = "Booking Confirmed!"; // Set the page title
+}
+
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-center text-gray-800 mb-6">Booking Confirmation</h1>
+
+    @if (Model.ConfirmedBooking != null)
+    {
+        <div class="bg-white shadow-md rounded-lg p-6 max-w-md mx-auto">
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Your Booking is Confirmed!</h2>
+
+            @* Display booking details *@
+            <p><strong>Booking ID:</strong> @Model.ConfirmedBooking.Id</p>
+
+            @* Check if it's a Restaurant Booking and display details *@
+            @if (Model.ConfirmedBooking.Restaurant != null)
+            {
+                <h3 class="text-lg font-medium text-gray-600 mt-4 mb-2">Restaurant Details</h3>
+                <p><strong>Restaurant:</strong> @Model.ConfirmedBooking.Restaurant.Name</p>
+                <p><strong>Location:</strong> @Model.ConfirmedBooking.Restaurant.Location</p>
+                <p><strong>Date & Time:</strong> @Model.ConfirmedBooking.BookingDateTime.ToString("yyyy-MM-dd HH:mm")</p>
+                <p><strong>Number of Guests:</strong> @Model.ConfirmedBooking.NumberOfGuests</p>
+                @if (Model.ConfirmedBooking.Table != null)
+                {
+                    <p><strong>Table:</strong> @Model.ConfirmedBooking.Table.TableName (Capacity: @Model.ConfirmedBooking.Table.Capacity)</p>
+                }
+                @if (!string.IsNullOrEmpty(Model.ConfirmedBooking.SpecialRequests))
+                {
+                    <p><strong>Special Requests:</strong> @Model.ConfirmedBooking.SpecialRequests</p>
+                }
+            }
+            @* Check if it's a Consultant Booking and display details *@
+            @* Assuming you have a ConsultantBooking model with similar properties and relationships *@
+            @* Note: You might need to adjust your backend model/service to differentiate or combine booking types gracefully *@
+            @* This is a placeholder based on a hypothetical ConsultantBooking structure *@
+            @* else if (Model.ConfirmedBooking.Consultant != null) // Example check if ConfirmedBooking can represent ConsultantBooking *@
+            @* {
+                 <h3 class="text-lg font-medium text-gray-600 mt-4 mb-2">Consultant Details</h3>
+                 <p><strong>Consultant:</strong> @Model.ConfirmedBooking.Consultant.Name</p>
+                 <p><strong>Specialty:</strong> @Model.ConfirmedBooking.Consultant.Specialty</p>
+                 <p><strong>Date & Time:</strong> @Model.ConfirmedBooking.BookingDateTime.ToString("yyyy-MM-dd HH:mm")</p>
+                 <p><strong>Duration:</strong> @Model.ConfirmedBooking.Duration.ToString(@"hh\:mm")</p> // Example duration display
+                 @if (!string.IsNullOrEmpty(Model.ConfirmedBooking.Details))
+                 {
+                     <p><strong>Details:</strong> @Model.ConfirmedBooking.Details</p>
+                 }
+            } *@
+
+
+            <p class="text-center text-gray-600 mt-6">
+                You will be redirected to your bookings page shortly, or click the link below.
+            </p>
+            <div class="text-center mt-2">
+                 <a href="/Book/MyBookings" class="text-blue-600 hover:underline">Go to My Bookings</a>
+            </div>
+
+        </div>
+    }
+    else
+    {
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative max-w-md mx-auto" role="alert">
+            <strong class="font-bold">Error:</strong>
+            <span class="block sm:inline">Booking details could not be loaded.</span>
+        </div>
+         <div class="text-center mt-4">
+              <a href="/Book/MyBookings" class="text-blue-600 hover:underline">Return to My Bookings</a>
+         </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Redirect to the My Bookings page after a few seconds
+            // Adjust the delay (in milliseconds) as needed
+            const redirectDelay = 5000; // 5 seconds
+
+            console.log(`Redirecting to /Book/MyBookings in ${redirectDelay / 1000} seconds...`);
+
+            setTimeout(function () {
+                window.location.href = '/Book/MyBookings';
+            }, redirectDelay);
+        });
+    </script>
+}

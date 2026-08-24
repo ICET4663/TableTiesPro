@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Your CSS styles here (as in the previous example) */
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-6">
+                <div class="card">
+                    <div class="card-body p-4">
+                        <h2 class="card-title mb-4">Login</h2>
+                        <form id="login-form" class="needs-validation" novalidate>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                                <div class="invalid-feedback">Please enter a valid email address.</div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+                                <div class="invalid-feedback">Please enter your password.</div>
+                            </div>
+                            <div class="mb-3 form-check">
+                                <input type="checkbox" class="form-check-input" id="rememberMe">
+                                <label class="form-check-label" for="rememberMe">Remember Me</label>
+                            </div>
+                            <div id="login-error" class="alert alert-danger" style="display: none;"></div>
+                            <button class="btn btn-primary w-100" type="submit">Login</button>
+                        </form>
+                        <hr class="my-4">
+                        <div class="text-center">
+                            <a href="#" id="forgot-password-link">Forgot Password?</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="forgotPasswordModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Forgot Password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="forgot-password-form" class="needs-validation" novalidate>
+                        <div class="mb-3">
+                            <label for="reset-email" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="reset-email" placeholder="Enter your email address" required>
+                            <div class="invalid-feedback">Please enter your email address.</div>
+                        </div>
+                        <button class="btn btn-primary w-100" type="submit">Send Reset Link</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            'use strict';
+
+            // --- Utility Function (Simulated fetchData) ---
+            window.utils = {
+                fetchData: async (url, options) => {
+                    // Simulate network delay
+                    await new Promise(resolve => setTimeout(resolve, 500));
+
+                    // Simulate a successful login
+                    if (url === '/api/Account/Login' && options.method === 'POST') {
+                        const requestBody = JSON.parse(options.body);
+                        if (requestBody.email === 'test@example.com' && requestBody.password === 'password') {
+                            return {
+                                token: 'fake-jwt-token',  //  Replace with a real token
+                                userId: '12345',
+                                email: 'test@example.com',
+                                userName: 'testuser',
+                                message: 'Login successful!'
+                            };
+                        } else {
+                            throw new Error('Invalid credentials'); // Simulate incorrect credentials
+                        }
+                    }
+
+                    // Simulate other API calls
+                    if (url.startsWith('/api/')) {
+                        return {}; // Return empty object for other API calls
+                    }
+
+                    // For non-API calls (like page loads), return a 200 OK response
+                    return new Response(null, { status: 200, statusText: 'OK' });
+                }
+            };
+
+            // --- Form validation on account pages ---
+            const forms = document.querySelectorAll('form');
+            forms.forEach(form => {
+                form.addEventListener('submit', function (event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+
+            // --- Login Form ---
+            const loginForm = document.getElementById('login-form');
+            if (loginForm) {
+                loginForm.addEventListener('submit', async (event) => {
+                    event.preventDefault();
+
+                    const email = document.getElementById('email').value;
+                    const password = document.getElementById('password').value;
+                    const rememberMe = document.getElementById('rememberMe').checked;
+
+
+                    const loginData = {
+                        email,
+                        password,
+                        rememberMe
+                    };
+
+                    const url = '/api/Account/Login';
+                    const options = {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(loginData)
+                    };
+
+                    try {
+                        const responseData = await window.utils.fetchData(url, options);
+                        // Handle successful login (e.g., redirect)
+                        console.log("Login successful:", responseData);
+                        localStorage.setItem('token', responseData.token); // Store the token
+                        window.location.href = '/Book/Restaurant'; // Redirect to booking page
+                    } catch (error) {
+                        // Error is already handled by fetchData, but you can add specific login error handling
+                        console.error("Login failed:", error);
+                        // Display error message on the form
+                        const errorDiv = document.getElementById('login-error');
+                        if (errorDiv) {
+                            errorDiv.textContent = 'Invalid login credentials.';
+                            errorDiv.style.display = 'block';
+                        }
+                    }
+                });
+            }
+            const forgotPasswordLink = document.getElementById('forgot-password-link');
+            const forgotPasswordModalEl = document.getElementById('forgotPasswordModal');
+            const forgotPasswordModal = new bootstrap.Modal(forgotPasswordModalEl);
+
+            if (forgotPasswordLink) {
+                forgotPasswordLink.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    forgotPasswordModal.show();
+                });
+            }
+
+
+            // Handle password reset request
+            const forgotPasswordForm = document.querySelector('#forgot-password-form');
+            if (forgotPasswordForm) {
+                forgotPasswordForm.addEventListener('submit', async (event) => {
+                    event.preventDefault();
+
+                    const email = document.querySelector('#reset-email').value;
+
+                    // Simulate API call for sending reset password email
+                    console.log('Sending password reset link to:', email);
+                    // In a real application, you would use fetch or axios to make the API call
+                    try {
+                        //Simulate a successful response
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                        console.log("Password reset email sent successfully");
+                        forgotPasswordModal.hide();
+                        // Optionally show a success message to the user
+                    } catch (error) {
+                       console.error("Error sending reset email", error);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

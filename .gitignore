@@ -1,0 +1,14 @@
+﻿bin/
+obj/
+.vs/
+.vscode/
+*.user
+*.suo
+node_modules/
+*.db
+*.sqlite
+*.dll
+*.exe
+*.pdb
+TableTies_push_tmp/
+TableTies_split_push/
